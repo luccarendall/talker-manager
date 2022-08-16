@@ -1,23 +1,33 @@
-// const Joi = require('joi');
+const validateEmail = (req, res, next) => {
+  const { email } = req.body;
+  const regexEmail = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
-// const obj = {
-//   email: 'teste@test.com',
-//   password: '123456',
-// };
+  if (!email || email.length === 0) {
+    return res.status(400).json({ message: 'O campo "email" é obrigatório' });
+  }
 
-// const schema = Joi.object({
-//   email: Joi.string().email().required().messages({
-//     'string.empty': 'O campo email não pode ser vazio',
-//     'string.email': 'O campo email deve ser um email válido',
-//   }),
-//   password: Joi.string().min(6).required().messages({
-//     'string.empty': 'O campo senha não pode ser vazio',
-//     'string.min': 'O campo senha deve ter no mínimo {#limit} caracteres',
-//   }),
-// }).required({
-//   'any.required': 'O campo {#label} é obrigatório',
-// });
+  if (!regexEmail.test(email)) {
+    return res.status(400).json({ message: 'O "email" deve ter o formato "email@email.com"' });
+  }
 
-// console.log(schema.validate(obj));
+  next();
+};
 
-// return res.status(400).json({ message: err.details[0].message });
+const validatePwd = (req, res, next) => {
+  const { password } = req.body;
+
+  if (!password || password.length === 0) {
+    return res.status(400).json({ message: 'O campo "password" é obrigatório' });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({ message: 'O "password" deve ter pelo menos 6 caracteres' });
+  }
+
+  next();
+};
+
+module.exports = {
+  validateEmail,
+  validatePwd,
+}; 

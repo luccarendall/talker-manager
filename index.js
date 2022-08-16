@@ -3,13 +3,17 @@ const bodyParser = require('body-parser');
 const fs = require('fs').promises;
 const cors = require('cors');
 const { tokenGen } = require('./utils/tokenGen');
+const { readFile, createTalker } = require('./utils/fileSystem');
+const { validateEmail, validatePwd } = require('./utils/validateLogin');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
 const HTTP_OK_STATUS = 200;
+const HTTP_CREATED_STATUS = 201;
 const PORT = '3000';
+
 const talkerInfo = './talker.json';
 
 // não remova esse endpoint, e para o avaliador funcionar
@@ -39,8 +43,20 @@ app.get('/talker/:id', async (req, res) => {
 res.status(HTTP_OK_STATUS).json(talkerID);
 });
 
-app.post('/login', (_req, res) => {
+app.post('/login', validateEmail, validatePwd, (_req, res) => {
   const loginToken = tokenGen();
-
   res.status(HTTP_OK_STATUS).json({ token: loginToken });
+});
+
+app.post('/talker', async (req, res) => {
+  const { name, age, talk: { watchedAt, rate } } = req.body;
+
+  const talkerFile = await readFile();
+  
+  const talkerCreated = { name, age, talk: { watchedAt, rate } };
+
+  talkerFile.push(talkerCreated);
+
+  await createTalker(talkerFile);
+  return res.status(HTTP_CREATED_STATUS).json({ talkerCreated });
 });
