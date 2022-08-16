@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs').promises;
 const cors = require('cors');
+const { tokenGen } = require('./utils/tokenGen');
 
 const app = express();
 app.use(bodyParser.json());
@@ -36,4 +37,10 @@ app.get('/talker/:id', async (req, res) => {
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
 res.status(HTTP_OK_STATUS).json(talkerID);
+});
+
+app.post('/login', (_req, res) => {
+  const loginToken = tokenGen();
+
+  res.status(HTTP_OK_STATUS).json({ token: loginToken });
 });
