@@ -61,15 +61,18 @@ app.post('/login', validateEmail, validatePwd, (_req, res) => {
 
 // POST TALKER
 app.post('/talker', 
-validateAge, validateViewDate, validateName,
-validateRate, validateTalk, validateToken, 
+// Não tava passando pq tava chamando o validateToken por ultimo e precisa chamar antes dos outros. Mesma coisa com o talk... passei uns 40 minutos nisso e tô incrédulo até agora
+validateToken, validateAge, validateTalk, validateViewDate, validateName,
+validateRate, 
 async (req, res) => {
   const { name, age, talk: { watchedAt, rate } } = req.body;
   const talkerFile = await readFile();
-  const talkerCreated = { name, age, talk: { watchedAt, rate } };
+  const idCounter = talkerFile.length + 1;  
 
-  talkerFile.push(talkerCreated);
+  const createdTalker = { name, id: idCounter, age, talk: { watchedAt, rate } };
+
+  talkerFile.push(createdTalker);
 
   await createTalker(talkerFile);
-  return res.status(HTTP_CREATED_STATUS).json({ talkerCreated });
+  return res.status(HTTP_CREATED_STATUS).json(createdTalker);
 });

@@ -1,14 +1,14 @@
 // Lembrete: A requisição de teste está sendo feita pelo conteúdo do arquivo talker.json, logo o corpo da requisição(req.body) é dele.
 
-// Validar token
+// // Validar token
 const validateToken = (req, res, next) => {
   const { authorization } = req.headers;
 
-  if (!authorization) {
+  if (!authorization || authorization === undefined) {
     return res.status(401).json({ message: 'Token não encontrado' });
   }
 
-  if (authorization.length < 16 || authorization.length > 16) {
+  if (authorization.length < 16) {
  return res.status(401).json(
       { message: 'Token inválido' },
 ); 
@@ -92,6 +92,7 @@ const validateRate = (req, res, next) => {
 // Validar palestrante
 const validateTalk = (req, res, next) => {
   const { talk } = req.body;
+  
   if (talk === undefined || talk === '') {
    return res.status(400).json({
        message: 'O campo "talk" é obrigatório',
