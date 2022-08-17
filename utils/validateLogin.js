@@ -1,5 +1,6 @@
 const validateEmail = (req, res, next) => {
   const { email } = req.body;
+  // https://pt.stackoverflow.com/questions/1386/express%C3%A3o-regular-para-valida%C3%A7%C3%A3o-de-e-mail
   const regexEmail = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
   if (!email || email.length === 0) {

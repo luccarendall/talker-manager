@@ -5,6 +5,13 @@ const cors = require('cors');
 const { tokenGen } = require('./utils/tokenGen');
 const { readFile, createTalker } = require('./utils/fileSystem');
 const { validateEmail, validatePwd } = require('./utils/validateLogin');
+const { 
+  validateAge,
+  validateViewDate,
+  validateName,
+  validateRate,
+  validateTalk,
+  validateToken } = require('./utils/validateTalker');
 
 const app = express();
 app.use(bodyParser.json());
@@ -25,34 +32,40 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
+// GET TALKER
 app.get('/talker', async (_req, res) => {
   const talker = await fs.readFile(talkerInfo, 'utf-8');
   const talkerJSON = JSON.parse(talker);
   res.status(HTTP_OK_STATUS).json(talkerJSON);
 });
 
+// GET TALKER:id
 // npm run restore para restaurar o arquivo talker.json
 app.get('/talker/:id', async (req, res) => {
-  const { id } = req.params;
+const { id } = req.params;
   const talkerFile = await fs.readFile(talkerInfo, 'utf-8');
   const talkerJSON = JSON.parse(talkerFile);
   const talkerID = talkerJSON.find((talker) => talker.id === +id);
+  
   if (!talkerID) {
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
 res.status(HTTP_OK_STATUS).json(talkerID);
 });
 
+// POST LOGIN
 app.post('/login', validateEmail, validatePwd, (_req, res) => {
   const loginToken = tokenGen();
   res.status(HTTP_OK_STATUS).json({ token: loginToken });
 });
 
-app.post('/talker', async (req, res) => {
+// POST TALKER
+app.post('/talker', 
+validateAge, validateViewDate, validateName,
+validateRate, validateTalk, validateToken, 
+async (req, res) => {
   const { name, age, talk: { watchedAt, rate } } = req.body;
-
   const talkerFile = await readFile();
-  
   const talkerCreated = { name, age, talk: { watchedAt, rate } };
 
   talkerFile.push(talkerCreated);
