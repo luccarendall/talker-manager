@@ -87,7 +87,7 @@ validateViewDate,
 validateRate, 
 async (req, res) => {
   const { id } = req.params;
-  
+
   const { 
     name, 
     age, 
@@ -103,4 +103,20 @@ async (req, res) => {
   await createTalker(talkerFile);
 
   return res.status(HTTP_OK_STATUS).json(talkerFile[talkerIndex]);
+});
+
+// DELETE TALKER
+app.delete('/talker/:id', validateToken, async (req, res) => {
+  
+  const { id } = req.params;
+  const talkerFile = await readFile();
+
+  const talkerFilter = talkerFile.filter(
+    (item) => item.id !== Number(id),
+    );
+
+  await createTalker(talkerFilter);
+
+  return res.status(204)
+  .end();
 });
