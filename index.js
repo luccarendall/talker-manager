@@ -39,6 +39,16 @@ app.get('/talker', async (_req, res) => {
   res.status(HTTP_OK_STATUS).json(talkerJSON);
 });
 
+// GET TALKER/SEARCH
+app.get('/talker/search', validateToken, async (req, res) => {
+  const { q } = req.query;
+  const talkerFile = await readFile();
+  
+  // https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
+  const searchFilter = talkerFile.filter((item) => item.name.includes(q));
+  return res.status(HTTP_OK_STATUS).json(searchFilter);
+});
+
 // GET TALKER:id
 // npm run restore para restaurar o arquivo talker.json
 app.get('/talker/:id', async (req, res) => {
