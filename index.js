@@ -76,3 +76,31 @@ async (req, res) => {
   await createTalker(talkerFile);
   return res.status(HTTP_CREATED_STATUS).json(createdTalker);
 });
+
+// PUT TALKER
+app.put('/talker/:id', 
+validateToken, 
+validateName, 
+validateAge, 
+validateTalk, 
+validateViewDate, 
+validateRate, 
+async (req, res) => {
+  const { id } = req.params;
+  
+  const { 
+    name, 
+    age, 
+    talk } = req.body;
+
+  const talkerFile = await readFile();
+
+  const talkerIndex = talkerFile.findIndex((item) => item.id === Number(id));
+
+  talkerFile[talkerIndex] = { 
+    ...talkerFile[talkerIndex], name, age, talk };
+
+  await createTalker(talkerFile);
+
+  return res.status(HTTP_OK_STATUS).json(talkerFile[talkerIndex]);
+});
