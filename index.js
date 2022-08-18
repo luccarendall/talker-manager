@@ -107,7 +107,6 @@ async (req, res) => {
 
 // DELETE TALKER
 app.delete('/talker/:id', validateToken, async (req, res) => {
-  
   const { id } = req.params;
   const talkerFile = await readFile();
 
